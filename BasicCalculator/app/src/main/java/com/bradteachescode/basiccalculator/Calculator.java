@@ -8,16 +8,23 @@ public class Calculator {
         String operator = parts[1];
 
         return performOperation(num1, num2, operator);
+    }
 
-        private double performOperation(double num1, double num2, String operator){
-            switch (operator) {
-                case "+":
-                    return num1 + num2;
-                // Add other cases for -, *, / later
-                default:
-                    throw new IllegalArgumentException("Unknown operator");
-            }
+    private double performOperation(double num1, double num2, String operator) {
+        switch (operator) {
+            case "+":
+                return num1 + num2;
+            case "-":
+                return num1 - num2;
+            case "*":
+                return num1 * num2;
+            case "/":
+                if (num2 == 0) {
+                    throw new ArithmeticException("Cannot divide by zero");
+                }
+                return num1 / num2;
+            default:
+                throw new IllegalArgumentException("Unknown operator");
         }
-
     }
 }
