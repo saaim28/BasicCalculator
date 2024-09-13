@@ -1,22 +1,21 @@
 package com.bradteachescode.basiccalculator;
 
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private String number = "";
     private double num1 = 0;
     private double num2 = 0;
-    private String symbol = "";
+    private String symbol;
 
     private TextView answerTV;
     private Button keyPad0, keyPad1, keyPad2, keyPad3, keyPad4, keyPad5, keyPad6, keyPad7, keyPad8, keyPad9;
-    private Button keyPadAdd, keyPadSub, keyPadMult, keyPadDivide, keyPadClear, keyPadEquals;
+    private Button keyPadAdd, keyPadSub, keyPadMult, keyPadDivide, keyPadClear, keyPadEquals, keyPadDecimal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         keyPadDivide = findViewById(R.id.key_div_btn);
         keyPadClear = findViewById(R.id.key_clear_btn);
         keyPadEquals = findViewById(R.id.key_equals_btn);
+        keyPadDecimal = findViewById(R.id.key_decimal_btn);
 
         keyPad0.setOnClickListener(this);
         keyPad1.setOnClickListener(this);
@@ -60,101 +60,74 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         keyPadDivide.setOnClickListener(this);
         keyPadClear.setOnClickListener(this);
         keyPadEquals.setOnClickListener(this);
+        keyPadDecimal.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        if (id == R.id.key_0_btn) {
-            appendNumber("0");
-        } else if (id == R.id.key_1_btn) {
-            appendNumber("1");
-        } else if (id == R.id.key_2_btn) {
-            appendNumber("2");
-        } else if (id == R.id.key_3_btn) {
-            appendNumber("3");
-        } else if (id == R.id.key_4_btn) {
-            appendNumber("4");
-        } else if (id == R.id.key_5_btn) {
-            appendNumber("5");
-        } else if (id == R.id.key_6_btn) {
-            appendNumber("6");
-        } else if (id == R.id.key_7_btn) {
-            appendNumber("7");
-        } else if (id == R.id.key_8_btn) {
-            appendNumber("8");
-        } else if (id == R.id.key_9_btn) {
-            appendNumber("9");
+
+        if (id == R.id.key_0_btn || id == R.id.key_1_btn || id == R.id.key_2_btn ||
+                id == R.id.key_3_btn || id == R.id.key_4_btn || id == R.id.key_5_btn ||
+                id == R.id.key_6_btn || id == R.id.key_7_btn || id == R.id.key_8_btn ||
+                id == R.id.key_9_btn) {
+            number = number + ((Button) view).getText().toString();
+            answerTV.setText(number);
         } else if (id == R.id.key_add_btn) {
-            setOperator("+");
-        } else if (id == R.id.key_sub_btn) {
-            setOperator("-");
-        } else if (id == R.id.key_mult_btn) {
-            setOperator("*");
-        } else if (id == R.id.key_div_btn) {
-            setOperator("/");
-        } else if (id == R.id.key_clear_btn) {
-            clear();
-        } else if (id == R.id.key_equals_btn) {
-            calculateResult();
-        }
-    }
-
-    private void appendNumber(String num) {
-        number += num;
-        answerTV.setText(number);
-    }
-
-    private void setOperator(String op) {
-        symbol = op;
-        try {
-            num1 = Double.parseDouble(number);
-        } catch (NumberFormatException e) {
-            num1 = 0;
-        }
-        number = "";
-    }
-
-    private void clear() {
-        symbol = "";
-        num1 = 0;
-        num2 = 0;
-        number = "";
-        answerTV.setText("");
-    }
-
-    private void calculateResult() {
-        try {
-            num2 = Double.parseDouble(number);
-            double result = 0;
-            switch (symbol) {
-                case "+":
-                    result = num1 + num2;
-                    break;
-                case "-":
-                    result = num1 - num2;
-                    break;
-                case "*":
-                    result = num1 * num2;
-                    break;
-                case "/":
-                    if (num2 == 0) {
-                        answerTV.setText("Cannot divide by zero");
-                        return;
-                    }
-                    result = num1 / num2;
-                    break;
-                default:
-                    answerTV.setText("Invalid operation");
-                    return;
+            symbol = "+";
+            if (!number.isEmpty()) {
+                num1 = Double.parseDouble(number);
+                number = "";
             }
-            answerTV.setText(String.valueOf(result));
-        } catch (NumberFormatException e) {
-            answerTV.setText("Error");
-        } finally {
+        } else if (id == R.id.key_sub_btn) {
+            symbol = "-";
+            if (!number.isEmpty()) {
+                num1 = Double.parseDouble(number);
+                number = "";
+            }
+        } else if (id == R.id.key_mult_btn) {
+            symbol = "*";
+            if (!number.isEmpty()) {
+                num1 = Double.parseDouble(number);
+                number = "";
+            }
+        } else if (id == R.id.key_div_btn) {
+            symbol = "/";
+            if (!number.isEmpty()) {
+                num1 = Double.parseDouble(number);
+                number = "";
+            }
+        } else if (id == R.id.key_clear_btn) {
+            symbol = "";
             num1 = 0;
             num2 = 0;
             number = "";
+            answerTV.setText("");
+        } else if (id == R.id.key_equals_btn) {
+            calculateResult();
+        } else if (id == R.id.key_decimal_btn) {
+            if (!number.contains(".")) {
+                number = number + ".";
+                answerTV.setText(number);
+            }
+        }
+    }
+
+    private void calculateResult() {
+        if (!number.isEmpty()) {
+            num2 = Double.parseDouble(number);
+            Calculator calculator = new Calculator();
+            try {
+                double result = calculator.calculate(num1 + " " + symbol + " " + num2);
+                answerTV.setText("answer: " + result);
+                num1 = result;
+                num2 = 0;
+                number = "";
+            } catch (ArithmeticException e) {
+                answerTV.setText("Error: Division by zero");
+            } catch (IllegalArgumentException e) {
+                answerTV.setText("Error: " + e.getMessage());
+            }
         }
     }
 }

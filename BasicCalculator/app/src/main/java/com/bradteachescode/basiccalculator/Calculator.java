@@ -27,4 +27,4 @@ public class Calculator {
                 throw new IllegalArgumentException("Unknown operator");
         }
     }
-}
+    }
