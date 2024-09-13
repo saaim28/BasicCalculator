@@ -26,4 +26,10 @@ public class CalculatorTest {
         Calculator calculator = new Calculator();
         assertEquals(2.0, calculator.calculate("6 / 3"), 0.0001);
     }
+
+    @Test(expected = ArithmeticException.class)
+    public void testDivisionByZero() {
+        Calculator calculator = new Calculator();
+        calculator.calculate("5 / 0");
+    }
 }
