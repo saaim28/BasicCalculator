@@ -27,9 +27,18 @@ public class CalculatorTest {
         assertEquals(2.0, calculator.calculate("6 / 3"), 0.0001);
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
+            (expected = ArithmeticException.class)
     public void testDivisionByZero() {
         Calculator calculator = new Calculator();
         calculator.calculate("5 / 0");
+    }
+
+    @Test
+            (expected = ArithmeticException.class)
+    public void testInvalidInput() {
+        Calculator calculator = new Calculator();
+        double maxValue = Double.MAX_VALUE;
+        calculator.calculate(maxValue + " + 1");
     }
 }
